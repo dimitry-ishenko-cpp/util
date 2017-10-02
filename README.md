@@ -51,6 +51,59 @@ int main(int argc, char* argv[])
 }
 ```
 
+Logging example 2:
+```c++
+#include "util/debug.hpp"
+#include "util/logging.hpp"
+
+class foo : private util::logger
+{
+public:
+    foo() : util::logger("foo")
+    {
+        dbg() << "Constructing";
+        // do something
+    }
+
+    ~foo()
+    {
+        dbg() << "Destructing";
+        // do something
+    }
+
+    void bar(int baz)
+    {
+        info() << "Running bar(" << baz << ")";
+        // do something
+        if(baz < 0) err() << "Negative baz";
+    }
+};
+
+int main(int argc, char* argv[])
+{
+    using namespace util::logging;
+    util::debug(true);
+    util::send_to_syslog(true);
+
+    info() << "Starting " << argv[0];
+
+    foo instance;
+    instance.bar(-1);
+
+    warn() << "Exiting now!";
+    return 0;
+}
+```
+Output:
+```
+Starting ./runme
+foo: Constructing
+foo: Running bar(-1)
+foo: Negative baz
+Exiting now!
+foo: Destructing
+```
+
 ## Authors
 
 * **Dimitry Ishenko** - dimitry (dot) ishenko (at) (gee) mail (dot) com
