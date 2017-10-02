@@ -43,6 +43,10 @@ bool send_to_syslog() noexcept { return syslog_; }
 void send_to_syslog(bool x) noexcept { syslog_ = x; }
 
 ////////////////////////////////////////////////////////////////////////////////
+stream::stream(const std::string& name, level l) : level_(l)
+{ if(name.size()) *this << name << ": "; }
+
+////////////////////////////////////////////////////////////////////////////////
 stream::~stream()
 {
     std::ostream* os; int pri;

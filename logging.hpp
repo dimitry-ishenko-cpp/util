@@ -10,6 +10,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <sstream>
+#include <string>
 #include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +57,7 @@ class stream : private std::ostringstream
 public:
     ////////////////////
     explicit stream(level l) : level_(l) { }
+    stream(const std::string&, level);
     ~stream();
 
     stream(const stream&) = delete;
