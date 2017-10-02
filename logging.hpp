@@ -17,25 +17,16 @@
 namespace util
 {
 
-////////////////////////////////////////////////////////////////////////////////
-// whether to log debug messages
+// send logs to console
 //
-// unless explicitly set to false,
-// debug messages will also be logged,
-// if the environment variable DEBUG is set
-//
-bool debug() noexcept;
-void debug(bool) noexcept;
-
-// whether to send logs to console
-//
-// if enabled, debug & info messages will be logged to std::cout
-// and warn & error messages will be logged to std::cerr
+// When enabled, debug & info messages will be
+// logged to std::cout and warn & error messages
+// will be logged to std::cerr.
 //
 bool send_to_console() noexcept;
 void send_to_console(bool) noexcept;
 
-// whether to send logs to syslog
+// send logs to syslog
 //
 bool send_to_syslog() noexcept;
 void send_to_syslog(bool) noexcept;
@@ -47,8 +38,8 @@ enum class level { dbg, info, warn, err };
 ////////////////////////////////////////////////////////////////////////////////
 // logging stream
 //
-// instances of this class are returned by
-// dbg(), info(), warn() and err() functions
+// Instances of this class are returned by
+// dbg(), info(), warn(), err() and log() functions.
 //
 class stream : private std::ostringstream
 {
@@ -56,7 +47,6 @@ class stream : private std::ostringstream
 
 public:
     ////////////////////
-    explicit stream(level l) : level_(l) { }
     stream(const std::string&, level);
     ~stream();
 
@@ -90,28 +80,22 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // logging functions
 //
-inline auto  dbg() { return stream(level::dbg ); }
-inline auto info() { return stream(level::info); }
-inline auto warn() { return stream(level::warn); }
-inline auto  err() { return stream(level::err ); }
-
-// log with user-defined level
-inline auto log(util::level level) { return stream(level); }
-
 namespace logging
 {
 
-using util::dbg;
-using util::info;
-using util::warn;
-using util::err;
+inline auto  dbg() { return stream("", level::dbg ); }
+inline auto info() { return stream("", level::info); }
+inline auto warn() { return stream("", level::warn); }
+inline auto  err() { return stream("", level::err ); }
 
-using util::level;
-using util::log;
+// log with user-defined level
+inline auto log(level l) { return stream("", l); }
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Logger class
+//
 class logger
 {
 protected:

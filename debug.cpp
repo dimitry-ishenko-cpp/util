@@ -1,0 +1,30 @@
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2017 Dimitry Ishenko
+// Contact: dimitry (dot) ishenko (at) (gee) mail (dot) com
+//
+// Distributed under the GNU GPL license. See the LICENSE.md file for details.
+
+////////////////////////////////////////////////////////////////////////////////
+#include "util/debug.hpp"
+#include <cstdlib>
+
+////////////////////////////////////////////////////////////////////////////////
+namespace util
+{
+
+namespace { bool mode = false, read = false; }
+
+bool debug() noexcept
+{
+    if(!read)
+    {
+        mode = std::getenv("DEBUG");
+        read = true;
+    }
+    return mode;
+}
+
+void debug(bool new_mode) noexcept { mode = new_mode; read = true; }
+
+////////////////////////////////////////////////////////////////////////////////
+}

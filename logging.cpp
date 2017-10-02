@@ -5,12 +5,10 @@
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
 
 ////////////////////////////////////////////////////////////////////////////////
-#include "logging.hpp"
+#include "util/debug.hpp"
+#include "util/logging.hpp"
 
-#include <cstdlib>
 #include <iostream>
-#include <stdexcept>
-
 #include <syslog.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,29 +16,14 @@ namespace util
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool debug_ = false, set_debug_ = true;
-
-bool debug() noexcept
-{
-    if(set_debug_)
-    {
-        debug_ = std::getenv("DEBUG");
-        set_debug_ = false;
-    }
-    return debug_;
-}
-
-void debug(bool x) noexcept { debug_ = x; set_debug_ = false; }
+namespace { bool console = true; }
+bool send_to_console() noexcept { return console; }
+void send_to_console(bool x) noexcept { console = x; }
 
 ////////////////////////////////////////////////////////////////////////////////
-static bool console_ = true;
-bool send_to_console() noexcept { return console_; }
-void send_to_console(bool x) noexcept { console_ = x; }
-
-////////////////////////////////////////////////////////////////////////////////
-static bool syslog_ = false;
-bool send_to_syslog() noexcept { return syslog_; }
-void send_to_syslog(bool x) noexcept { syslog_ = x; }
+namespace { bool syslog = false; }
+bool send_to_syslog() noexcept { return syslog; }
+void send_to_syslog(bool x) noexcept { syslog = x; }
 
 ////////////////////////////////////////////////////////////////////////////////
 stream::stream(const std::string& name, level l) : level_(l)
@@ -67,12 +50,7 @@ stream::~stream()
 
     auto s = str();
     if(send_to_console()) (*os) << s << std::endl;
-    if(send_to_syslog())
-#ifndef _WIN32
-        syslog(pri, "%s", s.data());
-#else
-        throw std::logic_error("Not implemented");
-#endif
+    if(send_to_syslog()) ::syslog(pri, "%s", s.data());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
