@@ -95,6 +95,16 @@ inline auto  info() { return stream(level::info ); }
 inline auto  warn() { return stream(level::warn ); }
 inline auto error() { return stream(level::error); }
 
+namespace logging
+{
+
+using util::debug;
+using util::info;
+using util::warn;
+using util::error;
+
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 class logger
 {
@@ -125,9 +135,6 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////
 }
-
-// pull logging functions into global namespace
-using util::debug; using util::info; using util::warn; using util::error;
 
 ////////////////////////////////////////////////////////////////////////////////
 #endif
