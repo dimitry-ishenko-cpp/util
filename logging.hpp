@@ -95,6 +95,9 @@ inline auto  info() { return stream(level::info ); }
 inline auto  warn() { return stream(level::warn ); }
 inline auto error() { return stream(level::error); }
 
+// log with user-defined level
+inline auto log(util::level level) { return stream(level); }
+
 namespace logging
 {
 
@@ -102,6 +105,9 @@ using util::debug;
 using util::info;
 using util::warn;
 using util::error;
+
+using util::level;
+using util::log;
 
 }
 
@@ -127,6 +133,9 @@ protected:
     auto  info() { return stream(name_, level::info ); }
     auto  warn() { return stream(name_, level::warn ); }
     auto error() { return stream(name_, level::error); }
+
+    // log with user-defined level
+    auto log(util::level level) { return stream(name_, level); }
 
 private:
     ////////////////////
