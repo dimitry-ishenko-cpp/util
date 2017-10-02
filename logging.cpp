@@ -20,7 +20,7 @@ namespace util
 ////////////////////////////////////////////////////////////////////////////////
 static bool debug_ = false, set_debug_ = true;
 
-bool send_debug() noexcept
+bool debug() noexcept
 {
     if(set_debug_)
     {
@@ -30,7 +30,7 @@ bool send_debug() noexcept
     return debug_;
 }
 
-void send_debug(bool x) noexcept { debug_ = x; set_debug_ = false; }
+void debug(bool x) noexcept { debug_ = x; set_debug_ = false; }
 
 ////////////////////////////////////////////////////////////////////////////////
 static bool console_ = true;
@@ -53,14 +53,14 @@ stream::~stream()
 
     switch(level_)
     {
-    case level::debug:
-        if(!send_debug()) return;
+    case level::dbg:
+        if(!debug()) return;
         os = &std::cout; pri = LOG_DEBUG;
         break;
 
-    case level::info : os = &std::cout; pri = LOG_INFO; break;
-    case level::warn : os = &std::cerr; pri = LOG_WARNING; break;
-    case level::error: os = &std::cerr; pri = LOG_ERR; break;
+    case level::info: os = &std::cout; pri = LOG_INFO; break;
+    case level::warn: os = &std::cerr; pri = LOG_WARNING; break;
+    case level::err : os = &std::cerr; pri = LOG_ERR; break;
 
     default: return;
     }

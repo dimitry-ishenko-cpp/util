@@ -18,16 +18,16 @@ namespace util
 {
 
 ////////////////////////////////////////////////////////////////////////////////
-// get/set whether to log debug messages
+// whether to log debug messages
 //
 // unless explicitly set to false,
 // debug messages will also be logged,
 // if the environment variable DEBUG is set
 //
-bool send_debug() noexcept;
-void send_debug(bool) noexcept;
+bool debug() noexcept;
+void debug(bool) noexcept;
 
-// get/set whether to log to console
+// whether to send logs to console
 //
 // if enabled, debug & info messages will be logged to std::cout
 // and warn & error messages will be logged to std::cerr
@@ -35,20 +35,20 @@ void send_debug(bool) noexcept;
 bool send_to_console() noexcept;
 void send_to_console(bool) noexcept;
 
-// get/set whether to log to syslog
+// whether to send logs to syslog
 //
 bool send_to_syslog() noexcept;
 void send_to_syslog(bool) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 // log level
-enum class level { debug, info, warn, error };
+enum class level { dbg, info, warn, err };
 
 ////////////////////////////////////////////////////////////////////////////////
 // logging stream
 //
 // instances of this class are returned by
-// debug(), info(), warn() and error() functions;
+// dbg(), info(), warn() and err() functions
 //
 class stream : private std::ostringstream
 {
@@ -90,10 +90,10 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 // logging functions
 //
-inline auto debug() { return stream(level::debug); }
-inline auto  info() { return stream(level::info ); }
-inline auto  warn() { return stream(level::warn ); }
-inline auto error() { return stream(level::error); }
+inline auto  dbg() { return stream(level::dbg ); }
+inline auto info() { return stream(level::info); }
+inline auto warn() { return stream(level::warn); }
+inline auto  err() { return stream(level::err ); }
 
 // log with user-defined level
 inline auto log(util::level level) { return stream(level); }
@@ -101,10 +101,10 @@ inline auto log(util::level level) { return stream(level); }
 namespace logging
 {
 
-using util::debug;
+using util::dbg;
 using util::info;
 using util::warn;
-using util::error;
+using util::err;
 
 using util::level;
 using util::log;
@@ -129,10 +129,10 @@ protected:
     auto const& name() const noexcept { return name_; }
     void name(std::string name) noexcept { name_ = std::move(name); }
 
-    auto debug() { return stream(name_, level::debug); }
-    auto  info() { return stream(name_, level::info ); }
-    auto  warn() { return stream(name_, level::warn ); }
-    auto error() { return stream(name_, level::error); }
+    auto  dbg() { return stream(name_, level::dbg ); }
+    auto info() { return stream(name_, level::info); }
+    auto warn() { return stream(name_, level::warn); }
+    auto  err() { return stream(name_, level::err ); }
 
     // log with user-defined level
     auto log(util::level level) { return stream(name_, level); }
