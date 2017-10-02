@@ -96,6 +96,34 @@ inline auto  warn() { return stream(level::warn ); }
 inline auto error() { return stream(level::error); }
 
 ////////////////////////////////////////////////////////////////////////////////
+class logger
+{
+protected:
+    ////////////////////
+    explicit logger(std::string name = std::string()) { this->name(name); }
+    virtual ~logger() noexcept { }
+
+    logger(const logger&) = default;
+    logger(logger&&) = default;
+
+    logger& operator=(const logger&) = default;
+    logger& operator=(logger&&) = default;
+
+    ////////////////////
+    auto const& name() const noexcept { return name_; }
+    void name(std::string name) noexcept { name_ = std::move(name); }
+
+    auto debug() { return stream(name_, level::debug); }
+    auto  info() { return stream(name_, level::info ); }
+    auto  warn() { return stream(name_, level::warn ); }
+    auto error() { return stream(name_, level::error); }
+
+private:
+    ////////////////////
+    std::string name_;
+};
+
+////////////////////////////////////////////////////////////////////////////////
 }
 
 // pull logging functions into global namespace
