@@ -50,6 +50,30 @@ int main(int argc, char* argv[])
     return 0;
 }
 ```
+Output with no args:
+```
+Starting ./runme
+Add -d or --debug parameter to show debug messages.
+Or define the DEBUG environment variable.
+Add -q or --quiet to run in quiet mode.
+Exiting now!
+```
+Output with --debug:
+```
+Starting ./runme
+Message #0
+Message #1
+Message #2
+Message #3
+Message #4
+Message #5
+Message #6
+Message #7
+Message #8
+Message #9
+Add -q or --quiet to run in quiet mode.
+Exiting now!
+```
 
 Logging example 2:
 ```c++
