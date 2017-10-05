@@ -12,19 +12,35 @@
 namespace util
 {
 
-namespace { bool mode = false, read = false; }
+////////////////////////////////////////////////////////////////////////////////
+namespace { bool debug_mode = false, debug_set = false; }
 
 bool debug() noexcept
 {
-    if(!read)
+    if(!debug_set)
     {
-        mode = std::getenv("DEBUG");
-        read = true;
+        debug_mode = std::getenv("DEBUG");
+        debug_set = true;
     }
-    return mode;
+    return debug_mode;
 }
 
-void debug(bool new_mode) noexcept { mode = new_mode; read = true; }
+void debug(bool new_mode) noexcept { debug_mode = new_mode; debug_set = true; }
+
+////////////////////////////////////////////////////////////////////////////////
+namespace { bool trace_mode = false, trace_set = false; }
+
+bool trace() noexcept
+{
+    if(!trace_set)
+    {
+        trace_mode = std::getenv("TRACE");
+        trace_set = true;
+    }
+    return trace_mode;
+}
+
+void trace(bool new_mode) noexcept { trace_mode = new_mode; trace_set = true; }
 
 ////////////////////////////////////////////////////////////////////////////////
 }

@@ -12,10 +12,11 @@
 namespace util
 {
 
+////////////////////////////////////////////////////////////////////////////////
 // check if debug mode is enabled
 //
 // Unless explicitly disabled by debug(false),
-// debug mode will also be enabled
+// the debug mode will also be enabled
 // when the DEBUG environment variable is defined.
 //
 bool debug() noexcept;
@@ -24,6 +25,20 @@ bool debug() noexcept;
 //
 void debug(bool) noexcept;
 
+////////////////////////////////////////////////////////////////////////////////
+// check if trace mode is enabled
+//
+// Unless explicitly disabled by trace(false),
+// the trace mode will also be enabled
+// when the TRACE environment variable is defined.
+//
+bool trace() noexcept;
+
+// enable/disable trace mode
+//
+void trace(bool) noexcept;
+
+////////////////////////////////////////////////////////////////////////////////
 }
 
 ////////////////////////////////////////////////////////////////////////////////
