@@ -36,6 +36,11 @@ stream::~stream()
 
     switch(level_)
     {
+    case level::trc:
+        if(!trace()) return;
+        os = &std::cout; pri = LOG_DEBUG;
+        break;
+
     case level::dbg:
         if(!debug()) return;
         os = &std::cout; pri = LOG_DEBUG;

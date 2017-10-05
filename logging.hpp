@@ -33,7 +33,7 @@ void send_to_syslog(bool) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 // log level
-enum class level { dbg, info, warn, err };
+enum class level { trc, dbg, info, warn, err };
 
 ////////////////////////////////////////////////////////////////////////////////
 // logging stream
@@ -83,6 +83,7 @@ private:
 namespace logging
 {
 
+inline auto  trc() { return stream("", level::trc ); }
 inline auto  dbg() { return stream("", level::dbg ); }
 inline auto info() { return stream("", level::info); }
 inline auto warn() { return stream("", level::warn); }
@@ -113,6 +114,7 @@ protected:
     auto const& name() const noexcept { return name_; }
     void name(std::string name) noexcept { name_ = std::move(name); }
 
+    auto  trc() { return stream(name_, level::trc ); }
     auto  dbg() { return stream(name_, level::dbg ); }
     auto info() { return stream(name_, level::info); }
     auto warn() { return stream(name_, level::warn); }
