@@ -99,9 +99,8 @@ inline auto log(level l) { return stream("", l); }
 //
 class logger
 {
-protected:
+public:
     ////////////////////
-    explicit logger(std::string name = std::string()) { this->name(name); }
     virtual ~logger() noexcept { }
 
     logger(const logger&) = default;
@@ -109,6 +108,10 @@ protected:
 
     logger& operator=(const logger&) = default;
     logger& operator=(logger&&) = default;
+
+protected:
+    ////////////////////
+    explicit logger(std::string name = std::string()) { this->name(name); }
 
     ////////////////////
     auto const& name() const noexcept { return name_; }
