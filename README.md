@@ -17,8 +17,8 @@ git submodule add https://github.com/dimitry-ishenko/util.git
 
 Logging example 1:
 ```c++
-#include "util/debug.hpp"
 #include "util/logging.hpp"
+using namespace util::logging;
 
 int main(int argc, char* argv[])
 {
@@ -29,17 +29,16 @@ int main(int argc, char* argv[])
         if(arg == "-q" || arg == "--quiet") util::send_to_console(false);
     }
 
-    using namespace util::logging;
-
     info() << "Starting " << argv[0];
 
     if(!util::debug())
     {
-        info() << "Add -d or --debug parameter to show debug messages.";
-        info() << "Or define the DEBUG environment variable.";
+        info() << "Add -d or --debug parameter";
+        info() << "or define DEBUG environment variable";
+        info() << "to show debug messages.";
     }
 
-    for(int n = 0; n < 10; ++n) dbg() << "Message " << '#' << n;
+    for(int n = 0; n < 10; ++n) dbg() << "Debug " << '#' << n;
 
     if(util::send_to_console())
     {
@@ -53,32 +52,33 @@ int main(int argc, char* argv[])
 Output with no args:
 ```
 Starting ./runme
-Add -d or --debug parameter to show debug messages.
-Or define the DEBUG environment variable.
+Add -d or --debug parameter
+or define DEBUG environment variable
+to show debug messages.
 Add -q or --quiet to run in quiet mode.
 Exiting now!
 ```
 Output with --debug:
 ```
 Starting ./runme
-Message #0
-Message #1
-Message #2
-Message #3
-Message #4
-Message #5
-Message #6
-Message #7
-Message #8
-Message #9
+Debug #0
+Debug #1
+Debug #2
+Debug #3
+Debug #4
+Debug #5
+Debug #6
+Debug #7
+Debug #8
+Debug #9
 Add -q or --quiet to run in quiet mode.
 Exiting now!
 ```
 
 Logging example 2:
 ```c++
-#include "util/debug.hpp"
 #include "util/logging.hpp"
+using namespace util::logging;
 
 class foo : private util::logger
 {
@@ -105,7 +105,6 @@ public:
 
 int main(int argc, char* argv[])
 {
-    using namespace util::logging;
     util::debug(true);
     util::send_to_syslog(true);
 

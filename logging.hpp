@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2017 Dimitry Ishenko
+// Copyright (c) 2017-2018 Dimitry Ishenko
 // Contact: dimitry (dot) ishenko (at) (gee) mail (dot) com
 //
 // Distributed under the GNU GPL license. See the LICENSE.md file for details.
@@ -11,35 +11,60 @@
 ////////////////////////////////////////////////////////////////////////////////
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <utility>
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace util
 {
 
-// send logs to console
+////////////////////////////////////////////////////////////////////////////////
+// Set trace mode.
 //
-// When enabled, debug & info messages will be
-// logged to std::cout and warn & error messages
-// will be logged to std::cerr.
+// Unless explicitly disabled by trace(false), the trace mode will also be
+// enabled if the TRACE environment variable has been defined.
 //
-bool send_to_console() noexcept;
-void send_to_console(bool) noexcept;
-
-// send logs to syslog
-//
-bool send_to_syslog() noexcept;
-void send_to_syslog(bool) noexcept;
+void trace(bool) noexcept;
+bool trace() noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
-// log level
+// Set debug mode.
+//
+// Unless explicitly disabled by debug(false), the debug mode will also be
+// enabled if the DEBUG environment variable has been defined.
+//
+void debug(bool) noexcept;
+bool debug() noexcept;
+
+////////////////////////////////////////////////////////////////////////////////
+// Send log messages to console.
+//
+// When enabled, trc, dbg and info messages will be sent to std::cout;
+// and warn and err messages will be sent to std::cerr.
+//
+// trc and dbg messages will only be logged, when their respective modes
+// (trace and debug) have been enabled.
+//
+void send_to_console(bool) noexcept;
+bool send_to_console() noexcept;
+
+////////////////////////////////////////////////////////////////////////////////
+// Send log messages to syslog.
+//
+// trc and dbg messages will only be logged, when their respective modes
+// (trace and debug) have been enabled.
+//
+void send_to_syslog(bool) noexcept;
+bool send_to_syslog() noexcept;
+
+////////////////////////////////////////////////////////////////////////////////
+// log levels
 enum class level { trc, dbg, info, warn, err };
 
 ////////////////////////////////////////////////////////////////////////////////
 // logging stream
 //
-// Instances of this class are returned by
-// dbg(), info(), warn(), err() and log() functions.
+// Used by the trc(), dbg(), info(), warn(), err() and log() functions.
 //
 class stream : private std::ostringstream
 {
@@ -47,7 +72,7 @@ class stream : private std::ostringstream
 
 public:
     ////////////////////
-    stream(const std::string&, level);
+    stream(std::string_view tag, level);
     ~stream();
 
     stream(const stream&) = delete;
@@ -55,22 +80,38 @@ public:
 
     stream& operator=(const stream&) = delete;
     stream& operator=(stream&& rhs)
-    { *static_cast<base*>(this) = std::move(rhs); level_ = rhs.level_; return *this; }
+    {
+        *static_cast<base*>(this) = std::move(rhs);
+        level_ = rhs.level_;
+        return *this;
+    }
 
     ////////////////////
     template<typename T>
     stream& operator<<(T&& value) &
-    { *static_cast<base*>(this) << std::forward<T>(value); return *this; }
+    {
+        *static_cast<base*>(this) << std::forward<T>(value);
+        return *this;
+    }
 
     template<typename T>
     stream&& operator<<(T&& value) &&
-    { *static_cast<base*>(this) << std::forward<T>(value); return std::move(*this); }
+    {
+        *static_cast<base*>(this) << std::forward<T>(value);
+        return std::move(*this);
+    }
 
     stream& write(const char* s, std::streamsize n) &
-    { base::write(s, n); return *this; }
+    {
+        base::write(s, n);
+        return *this;
+    }
 
     stream&& write(const char* s, std::streamsize n) &&
-    { base::write(s, n); return std::move(*this); }
+    {
+        base::write(s, n);
+        return std::move(*this);
+    }
 
 private:
     ////////////////////
@@ -95,14 +136,14 @@ inline auto log(level l) { return stream("", l); }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Logger class
+// logger base class
+//
+// Provides logging functions with specific tag to derived classes.
 //
 class logger
 {
 public:
     ////////////////////
-    virtual ~logger() noexcept { }
-
     logger(const logger&) = default;
     logger(logger&&) = default;
 
@@ -111,24 +152,24 @@ public:
 
 protected:
     ////////////////////
-    explicit logger(std::string name = std::string()) { this->name(name); }
+    explicit logger(std::string tag = std::string()) { this->tag(tag); }
 
     ////////////////////
-    auto const& name() const noexcept { return name_; }
-    void name(std::string name) noexcept { name_ = std::move(name); }
+    auto const& tag() const noexcept { return tag_; }
+    void tag(std::string tag) noexcept { tag_ = std::move(tag); }
 
-    auto  trc() { return stream(name_, level::trc ); }
-    auto  dbg() { return stream(name_, level::dbg ); }
-    auto info() { return stream(name_, level::info); }
-    auto warn() { return stream(name_, level::warn); }
-    auto  err() { return stream(name_, level::err ); }
+    auto  trc() { return stream(tag_, level::trc ); }
+    auto  dbg() { return stream(tag_, level::dbg ); }
+    auto info() { return stream(tag_, level::info); }
+    auto warn() { return stream(tag_, level::warn); }
+    auto  err() { return stream(tag_, level::err ); }
 
     // log with user-defined level
-    auto log(util::level level) { return stream(name_, level); }
+    auto log(util::level level) { return stream(tag_, level); }
 
 private:
     ////////////////////
-    std::string name_;
+    std::string tag_;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
