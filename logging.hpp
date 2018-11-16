@@ -72,6 +72,7 @@ class stream : private std::ostringstream
 
 public:
     ////////////////////
+    explicit stream(level l) : level_(l) { }
     stream(std::string_view tag, level);
     ~stream();
 
@@ -124,14 +125,14 @@ private:
 namespace logging
 {
 
-inline auto  trc() { return stream("", level::trc ); }
-inline auto  dbg() { return stream("", level::dbg ); }
-inline auto info() { return stream("", level::info); }
-inline auto warn() { return stream("", level::warn); }
-inline auto  err() { return stream("", level::err ); }
+inline auto  trc() { return stream(level::trc ); }
+inline auto  dbg() { return stream(level::dbg ); }
+inline auto info() { return stream(level::info); }
+inline auto warn() { return stream(level::warn); }
+inline auto  err() { return stream(level::err ); }
 
 // log with user-defined level
-inline auto log(level l) { return stream("", l); }
+inline auto log(level l) { return stream(l); }
 
 }
 

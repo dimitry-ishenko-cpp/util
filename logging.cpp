@@ -38,13 +38,14 @@ void send_to_syslog(bool enable) noexcept { syslog_ = enable; }
 bool send_to_syslog() noexcept { return syslog_; }
 
 ////////////////////////////////////////////////////////////////////////////////
-stream::stream(std::string_view tag, level l) : level_(l)
+stream::stream(std::string_view tag, level l) : stream(l)
 { if(tag.size()) *this << tag << ": "; }
 
 ////////////////////////////////////////////////////////////////////////////////
 stream::~stream()
 {
-    std::ostream* os; int prio;
+    std::ostream* os;
+    int prio;
 
     switch(level_)
     {
